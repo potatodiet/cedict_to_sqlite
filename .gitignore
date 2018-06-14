@@ -1,3 +1,4 @@
+.ropeproject/
 __pycache__/
-cedict.db
-cedict.txt
+
+tmp/
