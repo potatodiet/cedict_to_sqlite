@@ -2,18 +2,20 @@
 import sqlite3, requests, pathlib, gzip
 from pinyin import convert_pinyin
 
-if not pathlib.Path("/tmp/cedict.txt.gz").is_file():
-    with open("/tmp/cedict.txt.gz", "wb") as f:
+pathlib.Path("build/").mkdir(exist_ok=True)
+
+if not pathlib.Path("build/cedict.txt.gz").is_file():
+    with open("build/cedict.txt.gz", "wb") as f:
         r = requests.get("https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz")
         f.write(r.content)
 
-conn = sqlite3.connect("/tmp/cedict.db")
+conn = sqlite3.connect("build/cedict.db")
 c = conn.cursor()
 c.execute("DROP TABLE IF EXISTS entries")
 c.execute("CREATE TABLE entries (traditional TEXT, simplified TEXT, pinyin TEXT, english TEXT)")
 c.execute("CREATE INDEX entries_index ON entries (traditional, simplified)")
 
-with gzip.open("/tmp/cedict.txt.gz", "rt") as f:
+with gzip.open("build/cedict.txt.gz", "rt", encoding="utf-8") as f:
     for line in f:
         if line[0] is "#":
             continue

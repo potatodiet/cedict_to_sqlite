@@ -1,4 +1,4 @@
 .ropeproject/
 __pycache__/
 
-tmp/
+build/
