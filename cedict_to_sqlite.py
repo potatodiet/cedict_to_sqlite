@@ -2,6 +2,7 @@
 import sqlite3
 import gzip
 from pathlib import Path
+from argparse import ArgumentParser
 import requests
 from pinyin import convert_pinyin
 
@@ -16,9 +17,22 @@ class CLI:
     def __init__(self):
         Path("build/").mkdir(exist_ok=True)
 
+        self.init_args()
         self.download_cedict()
         self.init_db()
         self.populate_db()
+
+    def init_args(self):
+        """ Inits the argument parser. """
+
+        parser = ArgumentParser(
+            description="Converts cedict to a sqlite database.")
+        parser.add_argument("--enable-tone-accents",
+                            dest="enable_tone_accents",
+                            default=False, type=bool,
+                            help="Boolean toggle to add pinyin with character "
+                            "tones as seperate column. Defaults to False.")
+        self.args = parser.parse_args()
 
     def download_cedict(self):
         """ Downloads the cedict file and stores it on the filesystem. """
@@ -36,6 +50,11 @@ class CLI:
         cursor.execute("DROP TABLE IF EXISTS entries")
         cursor.execute("CREATE TABLE entries (traditional TEXT,"
                        "simplified TEXT, pinyin TEXT, english TEXT)")
+
+        if self.args.enable_tone_accents:
+            cursor.execute("ALTER TABLE entries "
+                           "ADD COLUMN pinyin_char_tone TEXT")
+
         cursor.execute("CREATE INDEX entries_index "
                        "ON entries (traditional, simplified)")
         cursor.close()
@@ -51,13 +70,23 @@ class CLI:
                 if line[0] == "#":
                     continue
 
-                line = convert_pinyin(line)
-
                 trad, simp = line.split(" ")[:2]
                 pinyin = line[line.index("[") + 1:line.index("]")]
                 english = line[line.index("/") + 1:-2].strip()
-                cursor.execute("INSERT INTO entries VALUES (?,?,?,?)",
-                               (trad, simp, pinyin, english))
+
+                if self.args.enable_tone_accents:
+                    pinyin_char_tone = convert_pinyin(pinyin)
+
+                    cursor.execute("INSERT INTO entries (traditional,"
+                                   "simplified, pinyin, english,"
+                                   "pinyin_char_tone) VALUES (?,?,?,?,?)",
+                                   (trad, simp, pinyin, english,
+                                    pinyin_char_tone))
+                else:
+                    cursor.execute("INSERT INTO entries (traditional,"
+                                   "simplified, pinyin, english) "
+                                   "VALUES (?,?,?,?,?)",
+                                   (trad, simp, pinyin, english))
 
         cursor.close()
         self.conn.commit()
