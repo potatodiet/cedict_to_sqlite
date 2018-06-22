@@ -85,7 +85,7 @@ class CLI:
                 else:
                     cursor.execute("INSERT INTO entries (traditional,"
                                    "simplified, pinyin, english) "
-                                   "VALUES (?,?,?,?,?)",
+                                   "VALUES (?,?,?,?)",
                                    (trad, simp, pinyin, english))
 
         cursor.close()
