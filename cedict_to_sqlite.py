@@ -32,6 +32,12 @@ class CLI:
                             default=False, type=bool,
                             help="Boolean toggle to add pinyin with character "
                             "tones as seperate column. Defaults to False.")
+        parser.add_argument("--erhua-keep-space",
+                            dest="erhua_keep_space",
+                            default=False, type=bool,
+                            help="Bolliean toggle to keep space before r if "
+                            "--enable-tone-accents is set to true. "
+                            "Defaults to False.")
         self.args = parser.parse_args()
 
     def download_cedict(self):
@@ -76,6 +82,10 @@ class CLI:
 
                 if self.args.enable_tone_accents:
                     pinyin_char_tone = convert_pinyin(pinyin)
+                    if self.args.erhua_keep_space:
+                        pinyin_char_tone = pinyin_char_tone.replace("r5", "r")
+                    else:
+                        pinyin_char_tone = pinyin_char_tone.replace(" r5", "r")
 
                     cursor.execute("INSERT INTO entries (traditional,"
                                    "simplified, pinyin, english,"
