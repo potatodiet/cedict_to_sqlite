@@ -35,7 +35,7 @@ class CLI:
         parser.add_argument("--erhua-keep-space",
                             dest="erhua_keep_space",
                             default=False, type=bool,
-                            help="Bolliean toggle to keep space before r if "
+                            help="Boolean toggle to keep space before r if "
                             "--enable-tone-accents is set to true. "
                             "Defaults to False.")
         self.args = parser.parse_args()
@@ -83,7 +83,7 @@ class CLI:
                 if self.args.enable_tone_accents:
                     pinyin_char_tone = convert_pinyin(pinyin)
                     if self.args.erhua_keep_space:
-                        pinyin_char_tone = pinyin_char_tone.replace("r5", "r")
+                        pinyin_char_tone = pinyin_char_tone.replace(" r5", " r")
                     else:
                         pinyin_char_tone = pinyin_char_tone.replace(" r5", "r")
 
