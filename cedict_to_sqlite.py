@@ -35,7 +35,7 @@ class CLI:
         parser.add_argument("--erhua-keep-space",
                             dest="erhua_keep_space",
                             default=False, type=bool,
-                            help="Bolliean toggle to keep space before r if "
+                            help="Boolean toggle to keep space before r if "
                             "--enable-tone-accents is set to true. "
                             "Defaults to False.")
         self.args = parser.parse_args()
