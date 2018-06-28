@@ -91,6 +91,7 @@ class CLI:
                     pinyin_char_tone = pinyin_char_tone.replace("u:2", "ǘ")
                     pinyin_char_tone = pinyin_char_tone.replace("u:3", "ü")
                     pinyin_char_tone = pinyin_char_tone.replace("u:4", "ǜ")
+                    pinyin_char_tone = pinyin_char_tone.replace("u:è", "üè")
 
                     cursor.execute("INSERT INTO entries (traditional,"
                                    "simplified, pinyin, english,"
