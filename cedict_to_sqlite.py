@@ -86,6 +86,11 @@ class CLI:
                         pinyin_char_tone = pinyin_char_tone.replace("r5", "r")
                     else:
                         pinyin_char_tone = pinyin_char_tone.replace(" r5", "r")
+                    # Some of the pinyin is capitalized so that's why I'm
+                    # leaving the preceding l out.
+                    pinyin_char_tone = pinyin_char_tone.replace("u:2", "ǘ")
+                    pinyin_char_tone = pinyin_char_tone.replace("u:3", "ü")
+                    pinyin_char_tone = pinyin_char_tone.replace("u:4", "ǜ")
 
                     cursor.execute("INSERT INTO entries (traditional,"
                                    "simplified, pinyin, english,"
